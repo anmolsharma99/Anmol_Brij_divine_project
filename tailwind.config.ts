@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ["Cinzel", "serif"],
+        body: ["Poppins", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -38,6 +42,14 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+        },
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          foreground: "hsl(var(--gold-foreground))",
+        },
+        tulsi: {
+          DEFAULT: "hsl(var(--tulsi))",
+          foreground: "hsl(var(--tulsi-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -65,25 +77,33 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        pulse: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 2s linear infinite",
+        pulse: "pulse 2s ease-in-out infinite",
+      },
+      backgroundImage: {
+        "gradient-divine": "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--gold)) 50%, hsl(var(--primary)) 100%)",
+        "gradient-peacock": "linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(180, 60%, 45%) 50%, hsl(var(--secondary)) 100%)",
+        "gradient-sacred": "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)",
+        "gradient-temple": "linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)",
       },
     },
   },
