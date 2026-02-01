@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
-import { Hotel, Car, Map, Calendar, Users, Clock, CheckCircle, ArrowRight, Phone } from "lucide-react";
+import { Hotel, Car, Map, Calendar, Users, Clock, CheckCircle, ArrowRight, Phone, CreditCard, Shield, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import TripPlanner from "@/components/booking/TripPlanner";
 import vrindavanTemple from "@/assets/vrindavan-temple.jpg";
 
 const services = [
@@ -52,52 +58,53 @@ const services = [
   },
 ];
 
-const packages = [
-  {
-    id: 1,
-    name: "Divine Day Trip",
-    duration: "1 Day",
-    price: 1499,
-    originalPrice: 2499,
-    features: ["All 7 Thakur Ji Darshan", "E-Rickshaw Transport", "Temple Guide", "Prasad Lunch"],
-  },
-  {
-    id: 2,
-    name: "Weekend Pilgrimage",
-    duration: "2 Days, 1 Night",
-    price: 3499,
-    originalPrice: 4999,
-    features: ["Hotel Stay", "Morning & Evening Aarti", "Yamuna Boat Ride", "All Meals", "Temple Visit"],
-    popular: true,
-  },
-  {
-    id: 3,
-    name: "Complete Vrindavan",
-    duration: "3 Days, 2 Nights",
-    price: 4999,
-    originalPrice: 7999,
-    features: ["Premium Hotel", "All Major Temples", "84 Kos Partial", "Meet Sadhu", "Photography", "All Meals"],
-  },
-];
-
 const Services = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const bookingData = location.state?.booking;
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
-    dates: "",
-    package: "",
-    guests: "",
+    guests: bookingData?.guests || "2",
+    package: bookingData?.package || "",
+    specialRequests: "",
   });
-  const { toast } = useToast();
+
+  const [step, setStep] = useState(bookingData ? 2 : 1);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.name || !formData.phone || !formData.email) {
+      toast({
+        title: "Please fill all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
-      title: "Booking Request Received! 🙏",
-      description: "Our team will contact you within 24 hours to confirm your trip.",
+      title: "🙏 Booking Confirmed!",
+      description: "Our team will contact you within 24 hours to finalize your divine journey.",
     });
-    setFormData({ name: "", phone: "", email: "", dates: "", package: "", guests: "" });
+
+    // Reset and show success
+    setStep(3);
+  };
+
+  const handleServiceBook = (serviceTitle: string) => {
+    toast({
+      title: `${serviceTitle} Selected! 🙏`,
+      description: "Scroll down to complete your booking details.",
+    });
+    setFormData({ ...formData, package: serviceTitle });
+    setStep(2);
+    
+    // Scroll to booking form
+    document.getElementById("booking-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -107,7 +114,7 @@ const Services = () => {
         <img src={vrindavanTemple} alt="Vrindavan" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 to-foreground/50" />
         <div className="container relative z-10 text-background">
-          <p className="text-primary font-medium tracking-widest text-sm mb-4">VRINDAVAN SERVICES</p>
+          <Badge className="bg-primary text-primary-foreground mb-4">VRINDAVAN SERVICES</Badge>
           <h1 className="font-display text-5xl font-bold mb-4">
             Plan Your <span className="text-primary">Divine Journey</span>
           </h1>
@@ -117,125 +124,205 @@ const Services = () => {
         </div>
       </div>
 
+      {/* Trip Planner Section */}
+      <section className="py-16 container">
+        <TripPlanner />
+      </section>
+
       {/* Services Grid */}
-      <section className="py-20">
+      <section className="py-20 bg-muted">
         <div className="container">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="font-display text-4xl font-bold mb-4">Our <span className="gradient-text">Services</span></h2>
             <div className="section-divider" />
+            <p className="text-muted-foreground mt-4">Everything you need for the perfect Vrindavan experience</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
-              <div key={service.title} className="card-divine hover:border-primary border border-transparent transition-colors">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <service.icon className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-display text-xl font-semibold mb-2">{service.title}</h3>
-                <p className="text-muted-foreground text-sm mb-4">{service.description}</p>
-                <p className="text-primary font-bold mb-4">{service.price}</p>
-                <ul className="space-y-2">
-                  {service.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-4 h-4 text-tulsi" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Packages */}
-      <section className="py-20 bg-muted">
-        <div className="container">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-display text-4xl font-bold mb-4">Popular <span className="gradient-text">Packages</span></h2>
-            <div className="section-divider" />
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {packages.map((pkg) => (
-              <div key={pkg.id} className={`card-divine relative ${pkg.popular ? "border-2 border-primary" : ""}`}>
-                {pkg.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full">
-                    Most Popular
-                  </span>
-                )}
-                <h3 className="font-display text-2xl font-bold mb-2">{pkg.name}</h3>
-                <p className="text-muted-foreground mb-4">{pkg.duration}</p>
-                <div className="flex items-baseline gap-2 mb-6">
-                  <span className="font-display text-4xl font-bold text-primary">₹{pkg.price}</span>
-                  <span className="text-muted-foreground line-through">₹{pkg.originalPrice}</span>
-                </div>
-                <ul className="space-y-3 mb-8">
-                  {pkg.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-4 h-4 text-tulsi" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Button className={`w-full ${pkg.popular ? "btn-divine" : "btn-outline-divine"}`}>
-                  Book Now <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
+              <Card key={service.title} className="hover:border-primary border border-transparent transition-all hover:shadow-lg group">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <service.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle className="font-display text-xl">{service.title}</CardTitle>
+                  <p className="text-muted-foreground text-sm">{service.description}</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-primary font-bold text-lg">{service.price}</p>
+                  <ul className="space-y-2">
+                    {service.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-2 text-sm">
+                        <CheckCircle className="w-4 h-4 text-tulsi" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button 
+                    onClick={() => handleServiceBook(service.title)}
+                    className="w-full btn-divine mt-4"
+                  >
+                    Book Now <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* Booking Form */}
-      <section className="py-20">
+      <section id="booking-form" className="py-20">
         <div className="container max-w-4xl">
-          <div className="card-divine">
-            <div className="text-center mb-8">
-              <h2 className="font-display text-3xl font-bold mb-2">Book Your <span className="gradient-text">Trip</span></h2>
-              <p className="text-muted-foreground">Fill the form and our team will contact you within 24 hours</p>
-            </div>
+          {step === 3 ? (
+            <Card className="text-center py-12">
+              <CardContent>
+                <div className="w-20 h-20 bg-tulsi/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle className="w-10 h-10 text-tulsi" />
+                </div>
+                <h2 className="font-display text-3xl font-bold mb-4">Booking Confirmed! 🙏</h2>
+                <p className="text-muted-foreground mb-6">
+                  Thank you for choosing ANMOL BRIJ for your spiritual journey. Our team will contact you within 24 hours.
+                </p>
+                <div className="flex gap-4 justify-center">
+                  <Button onClick={() => navigate("/")} variant="outline">
+                    Back to Home
+                  </Button>
+                  <Button onClick={() => setStep(1)} className="btn-divine">
+                    Book Another Trip
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-display text-3xl text-center">
+                  Complete Your <span className="gradient-text">Booking</span>
+                </CardTitle>
+                <p className="text-muted-foreground text-center">
+                  {bookingData ? "Complete your details to confirm" : "Fill the form and our team will contact you within 24 hours"}
+                </p>
+              </CardHeader>
+              <CardContent>
+                {/* Booking Summary if coming from trip planner */}
+                {bookingData && (
+                  <div className="bg-muted rounded-xl p-6 mb-8">
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <Calendar className="w-5 h-5 text-primary" />
+                      Your Selected Trip
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Package</p>
+                        <p className="font-medium capitalize">{bookingData.package.replace("-", " ")}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Guests</p>
+                        <p className="font-medium">{bookingData.guests}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Duration</p>
+                        <p className="font-medium">{bookingData.pricing?.days} Days</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Total</p>
+                        <p className="font-bold text-primary">₹{bookingData.pricing?.finalTotal?.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-            <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="Enter your name" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="+91 98765 43210" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} placeholder="your@email.com" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="dates">Preferred Dates</Label>
-                <Input id="dates" value={formData.dates} onChange={(e) => setFormData({...formData, dates: e.target.value})} placeholder="e.g., 15-17 March 2024" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="guests">Number of Guests</Label>
-                <Input id="guests" type="number" value={formData.guests} onChange={(e) => setFormData({...formData, guests: e.target.value})} placeholder="2" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="package">Preferred Package</Label>
-                <Input id="package" value={formData.package} onChange={(e) => setFormData({...formData, package: e.target.value})} placeholder="e.g., Weekend Pilgrimage" />
-              </div>
-              <div className="md:col-span-2">
-                <Button type="submit" className="w-full btn-divine text-lg py-6">
-                  Submit Booking Request
-                </Button>
-              </div>
-            </form>
+                <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input 
+                      id="name" 
+                      value={formData.name} 
+                      onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                      placeholder="Enter your name" 
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Input 
+                      id="phone" 
+                      value={formData.phone} 
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+                      placeholder="+91 98765 43210" 
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      value={formData.email} 
+                      onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                      placeholder="your@email.com" 
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="guests">Number of Guests</Label>
+                    <Select value={formData.guests} onValueChange={(v) => setFormData({...formData, guests: v})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select guests" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5, 6, 8, 10, 15, 20].map((n) => (
+                          <SelectItem key={n} value={n.toString()}>
+                            {n} {n === 1 ? "Guest" : "Guests"}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2 space-y-2">
+                    <Label htmlFor="requests">Special Requests</Label>
+                    <Textarea 
+                      id="requests"
+                      value={formData.specialRequests}
+                      onChange={(e) => setFormData({...formData, specialRequests: e.target.value})}
+                      placeholder="Any special requirements, dietary preferences, mobility needs, etc."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Button type="submit" className="w-full btn-divine text-lg py-6">
+                      Confirm Booking <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </div>
+                </form>
 
-            <div className="mt-8 pt-8 border-t border-border text-center">
-              <p className="text-muted-foreground mb-2">Need immediate assistance?</p>
-              <a href="tel:+919876543210" className="inline-flex items-center gap-2 text-primary font-semibold">
-                <Phone className="w-5 h-5" />
-                +91 98765 43210
-              </a>
-            </div>
-          </div>
+                {/* Trust Badges */}
+                <div className="mt-8 pt-8 border-t border-border grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <Shield className="w-6 h-6 text-tulsi mx-auto mb-2" />
+                    <p className="text-xs text-muted-foreground">Secure Booking</p>
+                  </div>
+                  <div className="text-center">
+                    <CreditCard className="w-6 h-6 text-primary mx-auto mb-2" />
+                    <p className="text-xs text-muted-foreground">Pay Later Option</p>
+                  </div>
+                  <div className="text-center">
+                    <Headphones className="w-6 h-6 text-secondary mx-auto mb-2" />
+                    <p className="text-xs text-muted-foreground">24/7 Support</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 text-center">
+                  <p className="text-muted-foreground mb-2">Need immediate assistance?</p>
+                  <a href="tel:+919876543210" className="inline-flex items-center gap-2 text-primary font-semibold text-lg">
+                    <Phone className="w-5 h-5" />
+                    +91 98765 43210
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </section>
     </Layout>
