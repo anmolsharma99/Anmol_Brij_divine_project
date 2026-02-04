@@ -15,6 +15,9 @@ import Signup from "./pages/Signup";
 import MandirTimings from "./pages/MandirTimings";
 import LadduGopal from "./pages/LadduGopal";
 import Cart from "./pages/Cart";
+import VrindavanEssentials from "./pages/VrindavanEssentials";
+import SevenThakurs from "./pages/SevenThakurs";
+import SpiritualBooks from "./pages/SpiritualBooks";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +41,9 @@ const App = () => (
             <Route path="/mandir-timings" element={<MandirTimings />} />
             <Route path="/laddu-gopal" element={<LadduGopal />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/vrindavan-essentials" element={<VrindavanEssentials />} />
+            <Route path="/seven-thakurs" element={<SevenThakurs />} />
+            <Route path="/spiritual-books" element={<SpiritualBooks />} />
             <Route path="/wishlist" element={<Cart />} />
             <Route path="/profile" element={<Login />} />
             <Route path="*" element={<NotFound />} />

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Heart, ShoppingCart, Star, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import ProductQuickView from "@/components/product/ProductQuickView";
 import ladduGopal from "@/assets/laddu-gopal.jpg";
 import poojaItems from "@/assets/pooja-items.jpg";
 import radhaKrishna from "@/assets/radha-krishna.jpg";
@@ -56,6 +57,7 @@ const products = [
 
 const FeaturedProducts = () => {
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const [quickViewProduct, setQuickViewProduct] = useState<typeof products[0] | null>(null);
   const { toast } = useToast();
 
   const toggleWishlist = (id: number) => {
@@ -73,6 +75,10 @@ const FeaturedProducts = () => {
       title: "Added to Cart! 🛒",
       description: `${name} has been added to your cart.`,
     });
+  };
+
+  const openQuickView = (product: typeof products[0]) => {
+    setQuickViewProduct(product);
   };
 
   return (
@@ -129,12 +135,14 @@ const FeaturedProducts = () => {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <Link to={`/product/${product.id}`}>
-                    <Button size="sm" className="bg-card text-foreground hover:bg-primary hover:text-primary-foreground">
-                      <Eye className="w-4 h-4 mr-2" />
-                      Quick View
-                    </Button>
-                  </Link>
+                  <Button 
+                    size="sm" 
+                    className="bg-card text-foreground hover:bg-primary hover:text-primary-foreground"
+                    onClick={() => openQuickView(product)}
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Quick View
+                  </Button>
                 </div>
               </div>
 
@@ -185,6 +193,13 @@ const FeaturedProducts = () => {
           ))}
         </div>
       </div>
+
+      {/* Quick View Modal */}
+      <ProductQuickView
+        product={quickViewProduct}
+        isOpen={!!quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+      />
     </section>
   );
 };
