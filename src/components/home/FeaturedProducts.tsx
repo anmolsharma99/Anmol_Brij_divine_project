@@ -82,33 +82,33 @@ const FeaturedProducts = () => {
   };
 
   return (
-    <section className="py-20">
-      <div className="container">
+    <section className="py-12 sm:py-16 md:py-20">
+      <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sm:mb-12">
           <div>
-            <p className="text-primary font-medium tracking-widest text-sm mb-2">DIVINE PRODUCTS</p>
-            <h2 className="font-display text-4xl font-bold">
+            <p className="text-primary font-medium tracking-widest text-xs sm:text-sm mb-2">DIVINE PRODUCTS</p>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold">
               Featured <span className="gradient-text">Products</span>
             </h2>
           </div>
           <Link to="/shop">
-            <Button variant="outline" className="btn-outline-divine mt-4 md:mt-0">
+            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
               View All Products
             </Button>
           </Link>
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {products.map((product) => (
             <div
               key={product.id}
-              className="card-divine group relative bg-card"
+              className="card-divine group relative bg-card rounded-xl overflow-hidden"
             >
               {/* Badge */}
               {product.badge && (
-                <span className="absolute top-4 left-4 z-10 bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
+                <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-[10px] sm:text-xs font-medium px-2 sm:px-3 py-1 rounded-full">
                   {product.badge}
                 </span>
               )}
@@ -116,7 +116,7 @@ const FeaturedProducts = () => {
               {/* Wishlist Button */}
               <button
                 onClick={() => toggleWishlist(product.id)}
-                className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center hover:bg-card transition-colors"
+                className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center hover:bg-card transition-colors"
               >
                 <Heart
                   className={`w-4 h-4 transition-colors ${
@@ -128,7 +128,7 @@ const FeaturedProducts = () => {
               </button>
 
               {/* Image */}
-              <div className="relative h-64 mb-4 overflow-hidden rounded-lg">
+              <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -147,35 +147,35 @@ const FeaturedProducts = () => {
               </div>
 
               {/* Content */}
-              <div className="space-y-2">
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+              <div className="p-4 space-y-2">
+                <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide">
                   {product.category}
                   {product.size && ` • ${product.size}`}
                 </p>
-                <h3 className="font-display font-semibold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                <h3 className="font-display font-semibold text-sm sm:text-base lg:text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors min-h-[2.5rem] sm:min-h-[3rem]">
                   {product.name}
                 </h3>
 
                 {/* Rating */}
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-gold text-gold" />
-                    <span className="text-sm font-medium">{product.rating}</span>
+                    <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-gold text-gold" />
+                    <span className="text-xs sm:text-sm font-medium">{product.rating}</span>
                   </div>
-                  <span className="text-xs text-muted-foreground">
-                    ({product.reviews} reviews)
+                  <span className="text-[10px] sm:text-xs text-muted-foreground">
+                    ({product.reviews})
                   </span>
                 </div>
 
                 {/* Price */}
-                <div className="flex items-center gap-2">
-                  <span className="font-display text-xl font-bold text-primary">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-display text-lg sm:text-xl font-bold text-primary">
                     ₹{product.price}
                   </span>
-                  <span className="text-sm text-muted-foreground line-through">
+                  <span className="text-xs sm:text-sm text-muted-foreground line-through">
                     ₹{product.originalPrice}
                   </span>
-                  <span className="text-xs text-tulsi font-medium">
+                  <span className="text-[10px] sm:text-xs text-tulsi font-medium">
                     {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
                   </span>
                 </div>
@@ -183,7 +183,7 @@ const FeaturedProducts = () => {
                 {/* Add to Cart */}
                 <Button
                   onClick={() => addToCart(product.name)}
-                  className="w-full btn-divine mt-4"
+                  className="w-full btn-divine mt-3 text-sm"
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Add to Cart
