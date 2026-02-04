@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Quote, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import sadhuSaint from "@/assets/sadhu-saint.jpg";
 
 const quotes = [
@@ -20,7 +21,7 @@ const quotes = [
 
 const SadhuVaaniPreview = () => {
   return (
-    <section className="py-20 relative overflow-hidden">
+    <section className="py-12 sm:py-16 md:py-20 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
@@ -28,41 +29,45 @@ const SadhuVaaniPreview = () => {
         }} />
       </div>
 
-      <div className="container relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-primary font-medium tracking-widest text-sm mb-4">SPIRITUAL WISDOM</p>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
+          <p className="text-primary font-medium tracking-widest text-xs sm:text-sm mb-3 sm:mb-4">SPIRITUAL WISDOM</p>
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             <span className="gradient-text">Sadhu Vaani</span>
           </h2>
           <div className="section-divider" />
-          <p className="text-muted-foreground mt-6">
+          <p className="text-muted-foreground mt-4 sm:mt-6 px-4">
             Divine teachings and wisdom from the revered saints of Vrindavan
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {quotes.map((quote) => (
-            <div
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+          {quotes.map((quote, index) => (
+            <motion.div
               key={quote.id}
-              className="card-divine bg-card relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="card-divine bg-card relative overflow-hidden p-4 sm:p-6"
             >
-              <Quote className="absolute top-4 right-4 w-12 h-12 text-primary/10" />
-              <div className="flex gap-6">
+              <Quote className="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 sm:w-12 sm:h-12 text-primary/10" />
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                 <img
                   src={quote.image}
                   alt={quote.author}
-                  className="w-24 h-24 rounded-full object-cover border-4 border-primary/20"
+                  className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full object-cover border-4 border-primary/20 mx-auto sm:mx-0 flex-shrink-0"
                 />
-                <div className="flex-1">
-                  <p className="text-lg leading-relaxed mb-4 font-medium italic">
+                <div className="flex-1 text-center sm:text-left">
+                  <p className="text-base sm:text-lg leading-relaxed mb-3 sm:mb-4 font-medium italic">
                     "{quote.text}"
                   </p>
-                  <p className="text-primary font-display font-semibold">
+                  <p className="text-primary font-display font-semibold text-sm sm:text-base">
                     — {quote.author}
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 

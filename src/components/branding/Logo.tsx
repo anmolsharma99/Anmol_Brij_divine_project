@@ -8,24 +8,24 @@ interface LogoProps {
 
 const Logo = ({ size = "md", showText = true }: LogoProps) => {
   const sizes = {
-    sm: { container: "w-12 h-12", text: "text-lg", sub: "text-[10px]" },
-    md: { container: "w-16 h-16", text: "text-2xl", sub: "text-xs" },
-    lg: { container: "w-24 h-24", text: "text-4xl", sub: "text-sm" },
+    sm: { container: "w-10 h-10 sm:w-12 sm:h-12", text: "text-base sm:text-lg", sub: "text-[8px] sm:text-[10px]", fontSize: "1.2rem" },
+    md: { container: "w-12 h-12 sm:w-14 sm:h-14", text: "text-lg sm:text-xl", sub: "text-[10px] sm:text-xs", fontSize: "1.5rem" },
+    lg: { container: "w-16 h-16 sm:w-20 sm:h-20", text: "text-2xl sm:text-3xl", sub: "text-xs sm:text-sm", fontSize: "2rem" },
   };
 
   return (
-    <Link to="/" className="flex items-center gap-3 group">
+    <Link to="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
       {/* Unique ANMOL BRIJ Logo - Diamond with Flute & Peacock Feather */}
       <motion.div
-        whileHover={{ scale: 1.08, rotate: 3 }}
+        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className={`${sizes[size].container} relative`}
+        className={`${sizes[size].container} relative flex-shrink-0`}
       >
         {/* Outer Glowing Aura */}
         <motion.div 
-          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 3, repeat: Infinity }}
-          className="absolute -inset-2 rounded-full bg-gradient-to-r from-primary via-gold to-secondary blur-lg opacity-40"
+          className="absolute -inset-1 sm:-inset-2 rounded-full bg-gradient-to-r from-primary via-gold to-secondary blur-md opacity-40"
         />
         
         {/* Diamond Shape Background */}
@@ -41,71 +41,49 @@ const Logo = ({ size = "md", showText = true }: LogoProps) => {
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             className="absolute inset-0"
           >
-            {[...Array(12)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <div
                 key={i}
                 className="absolute w-full h-full"
-                style={{ transform: `rotate(${i * 30}deg)` }}
+                style={{ transform: `rotate(${i * 45}deg)` }}
               >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-3 bg-gradient-to-b from-secondary/80 to-transparent rounded-full" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-gradient-to-b from-secondary/80 to-transparent rounded-full" />
               </div>
             ))}
           </motion.div>
         </div>
         
         {/* Central Design - Krishna's Flute with A */}
-        <div className="absolute inset-0 flex items-center justify-center transform -rotate-0">
-          {/* Letter A with Flute Design */}
-          <div className="relative">
-            {/* Main A Letter */}
-            <motion.span 
-              animate={{ 
-                textShadow: [
-                  "0 0 10px hsl(var(--gold))",
-                  "0 0 20px hsl(var(--gold))",
-                  "0 0 10px hsl(var(--gold))"
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="font-display font-black text-primary-foreground relative z-10 drop-shadow-lg"
-              style={{ fontSize: size === "lg" ? "2.5rem" : size === "md" ? "1.8rem" : "1.4rem" }}
-            >
-              अ
-            </motion.span>
-            {/* Flute underneath */}
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-1 bg-gradient-to-r from-transparent via-gold to-transparent rounded-full" />
-          </div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <motion.span 
+            animate={{ 
+              textShadow: [
+                "0 0 8px hsl(var(--gold))",
+                "0 0 16px hsl(var(--gold))",
+                "0 0 8px hsl(var(--gold))"
+              ]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="font-display font-black text-primary-foreground relative z-10 drop-shadow-lg"
+            style={{ fontSize: sizes[size].fontSize }}
+          >
+            अ
+          </motion.span>
         </div>
         
-        {/* Corner Lotus Petals */}
-        <div className="absolute -top-1 left-1/2 -translate-x-1/2">
-          <div className="w-2 h-2 bg-gradient-to-b from-accent to-accent/50 rounded-full shadow-lg" />
+        {/* Corner Accent Dots */}
+        <div className="absolute -top-0.5 left-1/2 -translate-x-1/2">
+          <div className="w-1.5 h-1.5 bg-gradient-to-b from-accent to-accent/50 rounded-full shadow-lg" />
         </div>
-        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
-          <div className="w-2 h-2 bg-gradient-to-t from-tulsi to-tulsi/50 rounded-full shadow-lg" />
+        <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2">
+          <div className="w-1.5 h-1.5 bg-gradient-to-t from-tulsi to-tulsi/50 rounded-full shadow-lg" />
         </div>
-        
-        {/* Sparkle Effects */}
-        <motion.div
-          animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
-          transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-          className="absolute top-1 right-1 w-1.5 h-1.5 bg-primary-foreground rounded-full"
-        />
-        <motion.div
-          animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
-          transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
-          className="absolute bottom-2 left-2 w-1 h-1 bg-primary-foreground rounded-full"
-        />
       </motion.div>
 
       {/* Text - ANMOL BRIJ */}
       {showText && (
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex flex-col"
-        >
-          <h1 className={`font-display ${sizes[size].text} font-black leading-none tracking-tight`}>
+        <div className="flex flex-col min-w-0">
+          <h1 className={`font-display ${sizes[size].text} font-black leading-none tracking-tight flex items-center gap-1`}>
             <motion.span 
               className="bg-gradient-to-r from-primary via-gold to-accent bg-clip-text text-transparent bg-[length:200%_auto]"
               animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
@@ -113,22 +91,16 @@ const Logo = ({ size = "md", showText = true }: LogoProps) => {
             >
               ANMOL
             </motion.span>
-            <span className="text-secondary ml-1.5 relative">
-              BRIJ
-              {/* Peacock feather accent */}
-              <svg className="absolute -right-3 -top-1 w-4 h-4 text-gold" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 3c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/>
-              </svg>
-            </span>
+            <span className="text-secondary">BRIJ</span>
           </h1>
-          <div className="flex items-center gap-1.5">
-            <div className="h-px flex-1 bg-gradient-to-r from-primary via-gold to-transparent" />
-            <p className={`${sizes[size].sub} text-muted-foreground font-medium tracking-[0.2em]`}>
-              श्री वृन्दावन धाम
+          <div className="flex items-center gap-1 mt-0.5">
+            <div className="h-px flex-1 bg-gradient-to-r from-primary via-gold to-transparent max-w-[30px]" />
+            <p className={`${sizes[size].sub} text-muted-foreground font-medium tracking-wider whitespace-nowrap`}>
+              श्री वृन्दावन
             </p>
-            <div className="h-px flex-1 bg-gradient-to-l from-primary via-gold to-transparent" />
+            <div className="h-px flex-1 bg-gradient-to-l from-primary via-gold to-transparent max-w-[30px]" />
           </div>
-        </motion.div>
+        </div>
       )}
     </Link>
   );
