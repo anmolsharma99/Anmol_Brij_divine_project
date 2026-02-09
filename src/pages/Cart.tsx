@@ -145,9 +145,11 @@ const Cart = () => {
                   <span className="font-display text-2xl font-bold text-primary">₹{total}</span>
                 </div>
               </div>
-              <Button className="w-full btn-divine text-lg py-6">
-                Proceed to Checkout <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              <Link to="/checkout">
+                <Button className="w-full btn-divine text-lg py-6">
+                  Proceed to Checkout <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
               <p className="text-xs text-muted-foreground text-center mt-4">
                 🔒 Secure checkout powered by Razorpay
               </p>

@@ -123,9 +123,9 @@ const Header = () => {
               <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center font-medium">0</span>
             </Link>
             {user ? (
-              <button onClick={handleSignOut} className="p-2 hover:bg-muted rounded-full transition-colors hidden sm:flex">
-                <LogOut className="w-5 h-5" />
-              </button>
+              <Link to="/profile" className="p-2 hover:bg-muted rounded-full transition-colors hidden sm:flex">
+                <User className="w-5 h-5" />
+              </Link>
             ) : (
               <Link to="/login" className="p-2 hover:bg-muted rounded-full transition-colors hidden sm:flex">
                 <User className="w-5 h-5" />
