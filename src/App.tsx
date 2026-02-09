@@ -19,6 +19,9 @@ import Cart from "./pages/Cart";
 import VrindavanEssentials from "./pages/VrindavanEssentials";
 import SevenThakurs from "./pages/SevenThakurs";
 import SpiritualBooks from "./pages/SpiritualBooks";
+import Profile from "./pages/Profile";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,7 +50,9 @@ const App = () => (
               <Route path="/seven-thakurs" element={<SevenThakurs />} />
               <Route path="/spiritual-books" element={<SpiritualBooks />} />
               <Route path="/wishlist" element={<Cart />} />
-              <Route path="/profile" element={<Login />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
