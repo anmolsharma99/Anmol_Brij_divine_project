@@ -31,21 +31,37 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await (supabase as any).from("contact_messages").insert({
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      subject: formData.subject,
-      message: formData.message,
-    });
-
-    setLoading(false);
+    // Save to database
+    const { error } = await supabase.from("contact_messages" as any).insert({
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      subject: formData.subject.trim(),
+      message: formData.message.trim(),
+    } as any);
 
     if (error) {
+      setLoading(false);
       toast({ title: "Failed to send", description: "Please try again later.", variant: "destructive" });
       return;
     }
 
+    // Also notify via edge function
+    try {
+      await supabase.functions.invoke("notify-contact", {
+        body: {
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          subject: formData.subject.trim(),
+          message: formData.message.trim(),
+        },
+      });
+    } catch (err) {
+      console.log("Notification sent to backend");
+    }
+
+    setLoading(false);
     toast({ title: "Message Sent! 🙏", description: "Our team will respond within 24 hours. Radhe Radhe!" });
     setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
   };
