@@ -1,35 +1,17 @@
 import Layout from "@/components/layout/Layout";
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import CouponCode from "@/components/cart/CouponCode";
-import ladduGopal from "@/assets/laddu-gopal.jpg";
-import poojaItems from "@/assets/pooja-items.jpg";
+import { useCart } from "@/contexts/CartContext";
+import { useState } from "react";
 
 const Cart = () => {
-  const [items, setItems] = useState([
-    { id: 1, name: "Royal Velvet Laddu Gopal Dress", price: 599, quantity: 2, image: ladduGopal, size: "3 No." },
-    { id: 2, name: "Complete Pooja Kit", price: 449, quantity: 1, image: poojaItems, size: "Standard" },
-  ]);
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [discount, setDiscount] = useState(0);
 
-  const updateQuantity = (id: number, delta: number) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
-  };
-
-  const removeItem = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal > 999 ? 0 : 99;
   const discountAmount = discount > 0 ? (discount < 100 ? Math.round(subtotal * discount / 100) : discount) : 0;
   const total = subtotal + shipping - discountAmount;
@@ -44,7 +26,7 @@ const Cart = () => {
     setAppliedCoupon(null);
   };
 
-  if (items.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <Layout>
         <div className="container py-20 text-center">
@@ -64,24 +46,23 @@ const Cart = () => {
       <div className="bg-muted py-12">
         <div className="container">
           <h1 className="font-display text-4xl font-bold">Shopping <span className="gradient-text">Cart</span></h1>
-          <p className="text-muted-foreground mt-2">{items.length} items in your cart</p>
+          <p className="text-muted-foreground mt-2">{cartItems.length} items in your cart</p>
         </div>
       </div>
 
       <div className="container py-12">
         <div className="grid lg:grid-cols-3 gap-12">
-          {/* Cart Items */}
           <div className="lg:col-span-2 space-y-6">
-            {items.map((item) => (
+            {cartItems.map((item) => (
               <div key={item.id} className="card-divine flex gap-6">
                 <img src={item.image} alt={item.name} className="w-32 h-32 object-cover rounded-lg" />
                 <div className="flex-1">
                   <div className="flex justify-between">
                     <div>
                       <h3 className="font-display font-semibold">{item.name}</h3>
-                      <p className="text-sm text-muted-foreground">{item.size}</p>
+                      {item.size && <p className="text-sm text-muted-foreground">{item.size}</p>}
                     </div>
-                    <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-accent">
+                    <button onClick={() => removeFromCart(item.id)} className="text-muted-foreground hover:text-accent">
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -108,20 +89,12 @@ const Cart = () => {
             ))}
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="card-divine sticky top-24">
               <h3 className="font-display text-xl font-bold mb-6">Order Summary</h3>
-              
-              {/* Coupon Code Section */}
               <div className="mb-6">
-                <CouponCode
-                  onApplyCoupon={handleApplyCoupon}
-                  onRemoveCoupon={handleRemoveCoupon}
-                  appliedCoupon={appliedCoupon}
-                />
+                <CouponCode onApplyCoupon={handleApplyCoupon} onRemoveCoupon={handleRemoveCoupon} appliedCoupon={appliedCoupon} />
               </div>
-
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
@@ -137,7 +110,7 @@ const Cart = () => {
                     <span className="font-medium">-₹{discountAmount}</span>
                   </div>
                 )}
-                {subtotal < 999 && (
+                {subtotal < 999 && subtotal > 0 && (
                   <p className="text-xs text-tulsi">Add ₹{999 - subtotal} more for FREE shipping!</p>
                 )}
                 <div className="border-t border-border pt-4 flex justify-between">

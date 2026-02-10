@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/contexts/CartContext";
 import ladduGopal from "@/assets/laddu-gopal.jpg";
 import poojaItems from "@/assets/pooja-items.jpg";
 import radhaKrishna from "@/assets/radha-krishna.jpg";
@@ -30,31 +31,29 @@ const products = [
 ];
 
 const Shop = () => {
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const { wishlistIds, toggleWishlist, addToCart } = useCart();
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [viewType, setViewType] = useState<"grid" | "list">("grid");
   const { toast } = useToast();
 
-  const toggleWishlist = (id: number) => {
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+  const handleToggleWishlist = (id: number) => {
+    toggleWishlist(id);
     toast({
-      title: wishlist.includes(id) ? "Removed from Wishlist" : "Added to Wishlist",
+      title: wishlistIds.includes(id) ? "Removed from Wishlist" : "Added to Wishlist ❤️",
       description: "Your wishlist has been updated 🙏",
     });
   };
 
-  const addToCart = (name: string) => {
+  const handleAddToCart = (product: typeof products[0]) => {
+    addToCart({ id: product.id, name: product.name, price: product.price, image: product.image, size: "Standard" });
     toast({
       title: "Added to Cart! 🛒",
-      description: `${name} has been added to your cart.`,
+      description: `${product.name} has been added to your cart.`,
     });
   };
 
   return (
     <Layout>
-      {/* Page Header */}
       <div className="bg-muted py-12">
         <div className="container">
           <h1 className="font-display text-4xl font-bold mb-2">
@@ -66,15 +65,12 @@ const Shop = () => {
 
       <div className="container py-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar Filters */}
           <aside className="lg:w-72 flex-shrink-0">
             <div className="card-divine sticky top-24 space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="font-display text-lg font-semibold">Filters</h3>
                 <Filter className="w-5 h-5 text-primary" />
               </div>
-
-              {/* Categories */}
               <div>
                 <h4 className="font-medium mb-4">Categories</h4>
                 <div className="space-y-3">
@@ -87,47 +83,29 @@ const Shop = () => {
                   ))}
                 </div>
               </div>
-
-              {/* Price Range */}
               <div>
                 <h4 className="font-medium mb-4">Price Range</h4>
-                <Slider
-                  defaultValue={[0, 5000]}
-                  max={10000}
-                  step={100}
-                  value={priceRange}
-                  onValueChange={setPriceRange}
-                  className="mb-4"
-                />
+                <Slider defaultValue={[0, 5000]} max={10000} step={100} value={priceRange} onValueChange={setPriceRange} className="mb-4" />
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>₹{priceRange[0]}</span>
                   <span>₹{priceRange[1]}</span>
                 </div>
               </div>
-
               <Button className="w-full btn-divine">Apply Filters</Button>
             </div>
           </aside>
 
-          {/* Products Grid */}
           <div className="flex-1">
-            {/* Toolbar */}
             <div className="flex items-center justify-between mb-8">
               <p className="text-muted-foreground">
                 Showing <span className="font-medium text-foreground">{products.length}</span> products
               </p>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setViewType("grid")}
-                    className={`p-2 rounded ${viewType === "grid" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
-                  >
+                  <button onClick={() => setViewType("grid")} className={`p-2 rounded ${viewType === "grid" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                     <Grid className="w-4 h-4" />
                   </button>
-                  <button
-                    onClick={() => setViewType("list")}
-                    className={`p-2 rounded ${viewType === "list" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
-                  >
+                  <button onClick={() => setViewType("list")} className={`p-2 rounded ${viewType === "list" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                     <List className="w-4 h-4" />
                   </button>
                 </div>
@@ -137,23 +115,19 @@ const Shop = () => {
               </div>
             </div>
 
-            {/* Products */}
             <div className={`grid gap-6 ${viewType === "grid" ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"}`}>
               {products.map((product) => (
-                <div
-                  key={product.id}
-                  className={`card-divine group relative ${viewType === "list" ? "flex gap-6" : ""}`}
-                >
+                <div key={product.id} className={`card-divine group relative ${viewType === "list" ? "flex gap-6" : ""}`}>
                   {product.badge && (
                     <span className="absolute top-4 left-4 z-10 bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
                       {product.badge}
                     </span>
                   )}
                   <button
-                    onClick={() => toggleWishlist(product.id)}
+                    onClick={() => handleToggleWishlist(product.id)}
                     className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center hover:bg-card transition-colors"
                   >
-                    <Heart className={`w-4 h-4 transition-colors ${wishlist.includes(product.id) ? "fill-accent text-accent" : "text-muted-foreground"}`} />
+                    <Heart className={`w-4 h-4 transition-colors ${wishlistIds.includes(product.id) ? "fill-accent text-accent" : "text-muted-foreground"}`} />
                   </button>
 
                   <div className={`relative overflow-hidden rounded-lg ${viewType === "list" ? "w-48 h-48 flex-shrink-0" : "h-64 mb-4"}`}>
@@ -177,7 +151,7 @@ const Shop = () => {
                         {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
                       </span>
                     </div>
-                    <Button onClick={() => addToCart(product.name)} className="w-full btn-divine mt-4">
+                    <Button onClick={() => handleAddToCart(product)} className="w-full btn-divine mt-4">
                       <ShoppingCart className="w-4 h-4 mr-2" />
                       Add to Cart
                     </Button>

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import Services from "./pages/Services";
@@ -22,6 +23,7 @@ import SpiritualBooks from "./pages/SpiritualBooks";
 import Profile from "./pages/Profile";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
+import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +31,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
+      <CartProvider>
       <SettingsProvider>
         <TooltipProvider>
           <Toaster />
@@ -49,7 +52,7 @@ const App = () => (
               <Route path="/vrindavan-essentials" element={<VrindavanEssentials />} />
               <Route path="/seven-thakurs" element={<SevenThakurs />} />
               <Route path="/spiritual-books" element={<SpiritualBooks />} />
-              <Route path="/wishlist" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-success" element={<OrderSuccess />} />
@@ -58,6 +61,7 @@ const App = () => (
           </BrowserRouter>
         </TooltipProvider>
       </SettingsProvider>
+      </CartProvider>
     </AuthProvider>
   </QueryClientProvider>
 );
