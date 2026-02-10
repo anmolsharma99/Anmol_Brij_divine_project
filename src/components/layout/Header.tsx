@@ -14,6 +14,7 @@ import LanguageSwitcher from "@/components/settings/LanguageSwitcher";
 import ThemeSwitcher from "@/components/settings/ThemeSwitcher";
 import { useSettings } from "@/contexts/SettingsContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 
 const Header = () => {
@@ -22,6 +23,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { language, setLanguage, theme, setTheme, mode, setMode, t } = useSettings();
   const { user, signOut } = useAuth();
+  const { cartCount, wishlistCount } = useCart();
   const { toast } = useToast();
 
   const handleSignOut = async () => {
@@ -116,11 +118,15 @@ const Header = () => {
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             <Link to="/wishlist" className="relative p-2 hover:bg-muted rounded-full transition-colors">
               <Heart className="w-5 h-5" />
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-accent text-accent-foreground text-[10px] rounded-full flex items-center justify-center font-medium">0</span>
+              {wishlistCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-accent text-accent-foreground text-[10px] rounded-full flex items-center justify-center font-medium">{wishlistCount}</span>
+              )}
             </Link>
             <Link to="/cart" className="relative p-2 hover:bg-muted rounded-full transition-colors">
               <ShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center font-medium">0</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center font-medium">{cartCount}</span>
+              )}
             </Link>
             {user ? (
               <Link to="/profile" className="p-2 hover:bg-muted rounded-full transition-colors hidden sm:flex">
