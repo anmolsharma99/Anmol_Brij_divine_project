@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useLocation, Link, Navigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
-import { CheckCircle2, Home, ShoppingCart, Stamp } from "lucide-react";
+import { CheckCircle2, Home, ShoppingCart, Stamp, Download, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import ceoAnmol from "@/assets/ceo-anmol.jpg";
@@ -14,6 +14,7 @@ const OrderSuccess = () => {
   const { clearCart, addOrder, addScratchCoupon } = useCart();
   const [scratchRevealed, setScratchRevealed] = useState(false);
   const [cleared, setCleared] = useState(false);
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   const order = location.state as {
     orderId: string;
@@ -66,6 +67,52 @@ const OrderSuccess = () => {
     setScratchRevealed(true);
   };
 
+  const handlePrintInvoice = () => {
+    const printContent = invoiceRef.current;
+    if (!printContent) return;
+    const win = window.open("", "_blank");
+    if (!win) return;
+    win.document.write(`
+      <html><head><title>Invoice - ${order.orderId}</title>
+      <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 40px; color: #1a1a1a; }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #e5e5e5; padding-bottom: 20px; margin-bottom: 20px; }
+        .logo { font-size: 24px; font-weight: bold; color: #d97706; }
+        .section { margin-bottom: 16px; }
+        .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .item-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; }
+        .total-row { display: flex; justify-content: space-between; padding: 12px 0; border-top: 2px solid #e5e5e5; font-size: 18px; font-weight: bold; }
+        .stamp { text-align: center; margin-top: 30px; padding: 16px; border: 3px solid #d97706; border-radius: 12px; display: inline-block; transform: rotate(-3deg); }
+        .stamp-text { font-size: 20px; font-weight: bold; color: #d97706; }
+        .center { text-align: center; }
+        .thank-you { margin-top: 30px; text-align: center; font-style: italic; color: #666; }
+      </style></head><body>
+      <div class="header">
+        <div><div class="logo">🙏 ANMOL BRIJ</div><div style="font-size:11px;color:#888">श्री वृन्दावन धाम | GST: 09XXXXX1234X1ZX</div></div>
+        <div style="text-align:right"><div style="font-weight:bold">Invoice #${order.orderId}</div><div style="font-size:12px;color:#888">${invoiceDate}</div></div>
+      </div>
+      <div class="section"><div class="label">Bill To</div>
+        <div style="font-weight:bold">${order.address.name}</div>
+        <div style="font-size:13px;color:#555">${order.address.street}, ${order.address.city}, ${order.address.state} - ${order.address.pincode}</div>
+        <div style="font-size:13px;color:#555">Phone: ${order.address.phone}</div>
+        ${order.userEmail ? `<div style="font-size:13px;color:#555">Email: ${order.userEmail}</div>` : ""}
+      </div>
+      ${order.items?.length ? `<div class="section"><div class="label">Items Ordered</div>${order.items.map(i => `<div class="item-row"><span>${i.name} × ${i.quantity}</span><span>₹${i.price * i.quantity}</span></div>`).join("")}</div>` : ""}
+      <div class="section">
+        <div class="item-row"><span>Subtotal</span><span>₹${order.subtotal}</span></div>
+        <div class="item-row"><span>GST (18%)</span><span>₹${order.gst}</span></div>
+        <div class="item-row"><span>Shipping</span><span>${(order.shipping || 0) === 0 ? "FREE" : `₹${order.shipping}`}</span></div>
+        <div class="total-row"><span>Total ${order.paymentMethod === "cod" ? "(Pay on Delivery)" : "Paid"}</span><span style="color:#d97706">₹${order.total}</span></div>
+      </div>
+      <div style="font-size:13px">Payment: <strong>${paymentLabel}</strong> — <span style="color:green">${order.paymentMethod === "cod" ? "⏳ Pay on Delivery" : "✓ Paid"}</span></div>
+      <div class="center"><div class="stamp"><div class="stamp-text">ANMOL BRIJ</div><div style="font-size:10px;color:#d97706">Officially Verified</div></div></div>
+      <div class="thank-you">Thank you for choosing ANMOL BRIJ! Radhe Radhe 🙏<br/>- Mr. Anmol Sharma (CEO) & Ms. Sakshi Mishra (Co-Founder)</div>
+      </body></html>
+    `);
+    win.document.close();
+    win.print();
+  };
+
   return (
     <Layout>
       <div className="container py-10 sm:py-16 max-w-3xl">
@@ -91,8 +138,17 @@ const OrderSuccess = () => {
           transition={{ delay: 0.3 }}
           className="card-divine relative overflow-hidden"
           id="invoice"
+          ref={invoiceRef}
         >
-          {/* ANMOL BRIJ Stamp Watermark */}
+          {/* Download & Print Buttons */}
+          <div className="flex justify-end gap-2 mb-4 print:hidden">
+            <Button variant="outline" size="sm" onClick={handlePrintInvoice} className="gap-2">
+              <Printer className="w-4 h-4" /> Print Invoice
+            </Button>
+            <Button variant="outline" size="sm" onClick={handlePrintInvoice} className="gap-2">
+              <Download className="w-4 h-4" /> Save as PDF
+            </Button>
+          </div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.06] pointer-events-none rotate-[-20deg]">
             <div className="border-[6px] border-primary rounded-full w-56 h-56 flex items-center justify-center">
               <div className="text-center">
