@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,9 +8,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { CreditCard, Smartphone, QrCode, Building2, ArrowRight, Loader2, ShieldCheck, Gift, Banknote } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CreditCard, Smartphone, QrCode, Building2, ArrowRight, Loader2, ShieldCheck, Gift, Banknote, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+  "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+  "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
+];
 
 const paymentMethods = [
   { id: "upi", label: "UPI Payment", icon: Smartphone, desc: "Google Pay, PhonePe, Paytm" },
@@ -29,14 +40,44 @@ const Checkout = () => {
   const [processing, setProcessing] = useState(false);
   const [isGift, setIsGift] = useState(false);
   const [giftMessage, setGiftMessage] = useState("");
+  const [pincodeLoading, setPincodeLoading] = useState(false);
   const [address, setAddress] = useState({
     name: user?.user_metadata?.full_name || "",
     phone: "",
     street: "",
     city: "",
+    district: "",
     state: "",
     pincode: "",
+    country: "India",
   });
+
+  const handlePincodeChange = useCallback(async (pincode: string) => {
+    setAddress((prev) => ({ ...prev, pincode }));
+    if (pincode.length === 6 && /^\d{6}$/.test(pincode)) {
+      setPincodeLoading(true);
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+        const data = await res.json();
+        if (data?.[0]?.Status === "Success" && data[0].PostOffice?.length > 0) {
+          const po = data[0].PostOffice[0];
+          setAddress((prev) => ({
+            ...prev,
+            city: po.Block && po.Block !== "NA" ? po.Block : po.Name,
+            district: po.District,
+            state: po.State,
+          }));
+          toast({ title: "📍 Location found!", description: `${po.District}, ${po.State}` });
+        } else {
+          toast({ title: "Invalid PIN Code", description: "Could not find location for this PIN code.", variant: "destructive" });
+        }
+      } catch {
+        toast({ title: "Lookup failed", description: "Could not verify PIN code. Please enter details manually.", variant: "destructive" });
+      } finally {
+        setPincodeLoading(false);
+      }
+    }
+  }, [toast]);
 
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
   const shipping = subtotal > 999 ? 0 : 99;
@@ -140,16 +181,49 @@ const Checkout = () => {
                       <Input value={address.street} onChange={(e) => setAddress({ ...address, street: e.target.value })} placeholder="House no., Street, Locality" required />
                     </div>
                     <div className="space-y-2">
-                      <Label>City *</Label>
-                      <Input value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} placeholder="City" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>State *</Label>
-                      <Input value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value })} placeholder="State" required />
+                      <Label>Country</Label>
+                      <Select value={address.country} onValueChange={(v) => setAddress({ ...address, country: v })}>
+                        <SelectTrigger><SelectValue placeholder="Select country" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="India">🇮🇳 India</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="space-y-2">
                       <Label>PIN Code *</Label>
-                      <Input value={address.pincode} onChange={(e) => setAddress({ ...address, pincode: e.target.value })} placeholder="110001" maxLength={6} required />
+                      <div className="relative">
+                        <Input
+                          value={address.pincode}
+                          onChange={(e) => handlePincodeChange(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          placeholder="Enter 6-digit PIN code"
+                          maxLength={6}
+                          required
+                        />
+                        {pincodeLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-primary" />}
+                        {!pincodeLoading && address.pincode.length === 6 && address.district && (
+                          <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-tulsi" />
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground">Enter PIN code to auto-fill city, district & state</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>District</Label>
+                      <Input value={address.district} onChange={(e) => setAddress({ ...address, district: e.target.value })} placeholder="District" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>City / Block *</Label>
+                      <Input value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} placeholder="City / Block" required />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label>State *</Label>
+                      <Select value={address.state} onValueChange={(v) => setAddress({ ...address, state: v })}>
+                        <SelectTrigger><SelectValue placeholder="Select state" /></SelectTrigger>
+                        <SelectContent>
+                          {INDIAN_STATES.map((s) => (
+                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </motion.div>
