@@ -1,73 +1,91 @@
-# Welcome to your Lovable project
+ANMOL BRAJ – A Divine Spiritual Experience 🌸
 
-## Project info
+🌟 About Anmol Braj
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Anmol Braj is a spiritual e-commerce platform dedicated to bringing the divine beauty of Braj culture into every home. Inspired by the sacred land of Vrindavan and the eternal love of Radha-Krishna, Anmol Braj offers premium spiritual products crafted with devotion, purity, and authenticity.
 
-## How can I edit this code?
+The vision of Anmol Braj is simple:
 
-There are several ways of editing your application.
+“To connect hearts with devotion and bring Braj’s divine essence to every devotee.”
 
-**Use Lovable**
+🛍️ What Anmol Braj Offers
+👑 Laddu Gopal Ji Poshak
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Beautifully designed dresses made with:
 
-Changes made via Lovable will be committed automatically to this repo.
+High-quality fabrics
 
-**Use your preferred IDE**
+Handcrafted embroidery
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Traditional Braj-style patterns
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Perfect for daily wear and festival occasions.
 
-Follow these steps:
+🌸 Spiritual & Pooja Items
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Mukut (crowns)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Bansuri (flute)
 
-# Step 3: Install the necessary dependencies.
-npm i
+Mala & jewelry
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Decorative singhasan
 
-**Edit a file directly in GitHub**
+Festival accessories
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Every product is selected with devotion and care.
 
-**Use GitHub Codespaces**
+💻 About the Website
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The Anmol Braj website is designed to be:
 
-## What technologies are used for this project?
+✨ Elegant
+✨ Aesthetic
+✨ Devotional
+✨ Easy to use
 
-This project is built with:
+Key Features:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+🛒 Simple Add to Cart & Checkout
 
-## How can I deploy this project?
+📦 Order confirmation & invoice system
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+💌 Thank you message from Founder/CEO
 
-## Can I connect a custom domain to my Lovable project?
+📱 Fully responsive (Mobile + Desktop)
 
-Yes, you can!
+🎨 Soft spiritual color theme (gold, cream, peacock blue)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+🎯 Mission
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Promote Braj culture globally
+
+Support artisans who create devotional products
+
+Provide premium-quality spiritual items at fair prices
+
+🚀 Vision
+
+To become India’s leading spiritual brand for:
+
+Laddu Gopal poshak
+
+Radha Krishna accessories
+
+Devotional lifestyle products
+
+❤️ Why Choose Anmol Braj?
+
+✔️ Authentic Products
+✔️ Affordable Pricing
+✔️ Secure Payments
+✔️ Fast Delivery
+✔️ Customer Satisfaction First
+
+🌼 Brand Tagline Ideas
+
+“Divinity Delivered to Your Doorstep.”
+
+“Where Devotion Meets Elegance.”
+
+“Experience the Blessings of Braj.”
